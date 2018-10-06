@@ -1,0 +1,55 @@
+<div>
+  <div class="row">
+    <div class="col-lg-12 col-md-12 text-center">
+      <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOver($event)" [uploader]="uploader"
+        (onFileDrop)="fileDrop($event)" class="well my-drop-zone drop-box-area">
+        Drag and Drop files '.xls', '.xlsx', '.csv'
+        <div class="row">
+          <div class="col-lg-12 col-md-12 text-center" style="margin-left: 40%;width: auto;">
+            <input type="file" (change)="importFiles($event)" multiple="false" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th width="50%">Name</th>
+            <th>Report Type</th>
+            <th>Size</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filesListModel">
+            <td><strong>{{ item?.name }}</strong></td>
+            <td nowrap>
+              <select class="form-control pull-left col-md-3" [(ngModel)]="item.reportType" (change)="selectReportType($event.target.value)" placeholder="Required"
+                required>
+                <option *ngFor="let reportName of reportType" [ngValue]="reportName">{{reportName}}</option>
+              </select>
+            </td>
+            <td nowrap>{{ item?.size/1024/1024 | number:'.2' }} MB</td>
+            <td class="text-center">
+              <span *ngIf="item.status === 'success'"><i class="glyphicon glyphicon-ok"></i></span>
+              <span *ngIf="item.status === 'inprogress'"><i class="glyphicon glyphicon-ban-circle"></i></span>
+              <span *ngIf="item.status === 'error'"><i class="glyphicon glyphicon-remove"></i></span>
+            </td>
+            <td nowrap>
+              <button type="button" class="btn btn-success btn-xs" (click)="uploadfile(item)">
+                <span class="glyphicon glyphicon-upload"></span> Submit
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filesListModel && filesListModel.length === 0" class="text-center">
+            <td colspan="5"> No files uploaded. </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
