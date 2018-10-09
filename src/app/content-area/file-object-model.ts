@@ -10,6 +10,6 @@ export interface UploadFileMode {
     name: string;
     size: number;
     status: string;
-    data: Array<any>;
+    file: Array<any>;
     reportType: string;
 }

@@ -26,6 +26,34 @@ export class ContentAreaComponent implements OnInit {
     this.filePicked(event);
   }
 
+//   filePicked(oEvent) {
+//     // Get The File From The Input
+//     const target: any = <DataTransfer>(oEvent);
+//     // tslint:disable-next-line:curly
+//     if (target.length !== 1) throw new Error('Cannot use multiple files');
+//     if (target.length > 0 && (!this.isValidFiles(target))) {
+//       return false;
+//     }
+//     const reader: FileReader = new FileReader();
+//     const rABS = !!reader.readAsBinaryString;
+//     reader.onload = (e: any) => {
+//       /* read workbook */
+//       let bstr: any = e.target.result;
+//       if (!rABS) { bstr = new Uint8Array(bstr); }
+//       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
+//       /* grab first sheet */
+//       const wsname: string = wb.SheetNames[0];
+//       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+//       console.log(XLSX.utils.sheet_to_json(ws));
+//       const data = XLSX.utils.sheet_to_json(<FileObjectModel>ws, {raw: true});
+//       console.log(JSON.stringify(data));
+//       // tslint:disable-next-line:max-line-length
+//       const rowModel: UploadFileMode = { name: oEvent[0].name , size: oEvent[0].size, data: data, status: 'success', reportType: 'report1' };
+//       this.filesListModel.push(rowModel);
+//     };
+//     if (rABS) { reader.readAsBinaryString(target[0]); } else { reader.readAsArrayBuffer(target[0]); }
+// }
+
   filePicked(oEvent) {
     // Get The File From The Input
     const target: any = <DataTransfer>(oEvent);
@@ -35,23 +63,22 @@ export class ContentAreaComponent implements OnInit {
       return false;
     }
     const reader: FileReader = new FileReader();
-    const rABS = !!reader.readAsBinaryString;
+    // need to comment Read as URL
+    reader.readAsDataURL(target[0]);
+    // need to comment RABS
+    // const rABS = !!reader.readAsBinaryString;
     reader.onload = (e: any) => {
       /* read workbook */
       let bstr: any = e.target.result;
-      if (!rABS) { bstr = new Uint8Array(bstr); }
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' });
-      /* grab first sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      console.log(XLSX.utils.sheet_to_json(ws));
-      const data = XLSX.utils.sheet_to_json(<FileObjectModel>ws, {raw: true});
-      console.log(JSON.stringify(data));
+      // need to comment RABS
+      // if (!rABS) { bstr = new Uint8Array(bstr); }
+      bstr = bstr.substring(bstr.indexOf('base64,') + 7);
       // tslint:disable-next-line:max-line-length
-      const rowModel: UploadFileMode = { name: oEvent[0].name , size: oEvent[0].size, data: data, status: 'inprogress', reportType: 'report1' };
+      const rowModel: UploadFileMode = { name: oEvent[0].name , size: oEvent[0].size, file: bstr, status: 'success', reportType: 'report1' };
       this.filesListModel.push(rowModel);
     };
-    if (rABS) { reader.readAsBinaryString(target[0]); } else { reader.readAsArrayBuffer(target[0]); }
+    // need to comment RABS
+    // if (rABS) { reader.readAsBinaryString(target[0]); } else { reader.readAsArrayBuffer(target[0]); }
 }
 private isValidFiles(files) {
   // Check Number of files
@@ -64,9 +91,10 @@ private isValidFiles(files) {
   return true;
 }
 
-  uploadfile(rowObject) {
+  uploadfile(rowObject: UploadFileMode) {
      console.log('rowObject', rowObject);
-     this._uploadService.submitFile(rowObject).subscribe((response) => {
+     const inputObject = {file: rowObject.file, reportType: rowObject.reportType};
+     this._uploadService.submitFile(inputObject).subscribe((response) => {
         console.log('response', response);
      });
 

@@ -18,6 +18,38 @@ export class UploadService {
 
   }
 
+  async getBase64(file: any, name: string) {
+    const currentFile = file.File;
+    let result: string | any = '';
+    const reader = new FileReader();
+    reader.readAsDataURL(file.File);
+    reader.onload = () => {
+      try {
+        result = reader.result;
+        result = result.substring(result.indexOf('base64,') + 7);
+        const resp = this._http.post('http://localhost:3000/api', {
+            Base64String: result,
+            FileName: name.split('\\').pop(),
+            FarmId: '',
+            FieldId: '',
+            DrawingId: '',
+          }).pipe(
+            tap(response => response),
+            catchError(this.handleError('failedupoload', []))
+          );
+        return resp;
+      }
+      finally {
+
+      }
+    };
+    reader.onloadstart = () => { };
+    reader.onerror = (error) => { };
+    reader.onloadend = (object) => { };
+    reader.onprogress = (e) => {
+    };
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
     // TODO: send the error to remote logging infrastructure
