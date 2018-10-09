@@ -11,7 +11,7 @@ export class UploadService {
 
   constructor(private _http: HttpClient) { }
   submitFile(data) {
-    return this._http.post('http://localhost:3000/api', data).pipe(
+    return this._http.post('http://localhost:52060/api/fileUpload', data).pipe(
       tap(response => response),
       catchError(this.handleError('failedupoload', []))
     );
