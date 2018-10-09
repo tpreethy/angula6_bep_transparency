@@ -74,7 +74,7 @@ export class ContentAreaComponent implements OnInit {
       // if (!rABS) { bstr = new Uint8Array(bstr); }
       bstr = bstr.substring(bstr.indexOf('base64,') + 7);
       // tslint:disable-next-line:max-line-length
-      const rowModel: UploadFileMode = { name: oEvent[0].name , size: oEvent[0].size, file: bstr, status: 'success', reportType: 'report1' };
+      const rowModel: UploadFileMode = { Name: oEvent[0].name , Size: oEvent[0].size, File: bstr, Status: 'success', ReportType: 'report1' };
       this.filesListModel.push(rowModel);
     };
     // need to comment RABS
@@ -93,7 +93,7 @@ private isValidFiles(files) {
 
   uploadfile(rowObject: UploadFileMode) {
      console.log('rowObject', rowObject);
-     const inputObject = {file: rowObject.file, reportType: rowObject.reportType};
+     const inputObject = {File: rowObject.File, ReportType: rowObject.ReportType};
      this._uploadService.submitFile(inputObject).subscribe((response) => {
         console.log('response', response);
      });

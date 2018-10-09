@@ -7,9 +7,9 @@ export interface FileObjectModel {
 }
 
 export interface UploadFileMode {
-    name: string;
-    size: number;
-    status: string;
-    file: Array<any>;
-    reportType: string;
+    Name: string;
+    Size: number;
+    Status: string;
+    File: Array<any>;
+    ReportType: string;
 }
